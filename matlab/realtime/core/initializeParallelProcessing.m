@@ -1,13 +1,32 @@
 %
 % initialize pool of workers, data structures
 %
-%urut/dec11
 function [labRefs, nrWorkers, workerChannelMapping, allOKTot, activePluginsCont, activePluginsTrial] = initializeParallelProcessing( nrActiveChannels, StimOMaticConstants, StimOMaticData, serverIP, activePlugins, handlesParent, nrWorkersToUseMax )
 
 allOKTot=[];
 workerChannelMapping=[];
 activePluginsCont = [];
 activePluginsTrial = [];
+
+% TODO: 
+% If VTs are required the number of active channels needs to be raised
+if ~isempty(activePlugins)
+    % Check if pCtrlTHT is among them
+    for n = 1:length(activePlugins)
+        if activePlugins{n}.pluginDef.ID == 7
+            disp('Adding two channels for parallel video tracking')
+            nrActiveChannels = nrActiveChannels + 2;
+            StimOMaticData.nrActiveChannels = StimOMaticData.nrActiveChannels + 2; % Why does it appear twice?
+            if isfield(StimOMaticData, 'CSCChannels')
+                StimOMaticData.CSCChannels{1,end+1}.channelStr = StimOMaticConstants.VTStreams{1};
+                StimOMaticData.CSCChannels{1,end+1}.channelStr = StimOMaticConstants.VTStreams{2};
+            else
+                StimOMaticData.CSCChannels{1,1}.channelStr = StimOMaticConstants.VTStreams{1};
+                StimOMaticData.CSCChannels{1,2}.channelStr = StimOMaticConstants.VTStreams{2};
+            end;
+        end;
+    end;
+end;
 
 % in case no channels are selected.
 if nrActiveChannels == 0
@@ -16,7 +35,7 @@ if nrActiveChannels == 0
     allOKTot = 0;
     return;
 end
-   
+
 % events are received directly in the client
 succeededEvents = NlxOpenStream( StimOMaticConstants.TTLStream );
 if succeededEvents~=1

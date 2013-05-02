@@ -22,8 +22,14 @@ for kk=1:nrRunsTotal   %how many Runs to make till return to GUI
     
     % process new data for each worker
     for chanID = 1:length(processedData)   % loop over all channels assigned to this worker
-        [dataArray,timeStampArray,timeStampArrayConv,~,numRecordsReturned] = Netcom_pollCSC( CSCChannelInfo{chanID}.channelStr, 0, globalProperties.StimOMaticConstants.Fs, globalProperties.dataArrayPreAlloc,globalProperties.dataArrayPtr );  %0/1 verbose
-        
+        if strncmp('CSC',CSCChannelInfo{chanID}.channelStr,3)
+            % CSC Stream
+            [dataArray,timeStampArray,timeStampArrayConv,~,numRecordsReturned] = Netcom_pollCSC( CSCChannelInfo{chanID}.channelStr, 0, globalProperties.StimOMaticConstants.Fs, globalProperties.dataArrayPreAlloc,globalProperties.dataArrayPtr );  %0/1 verbose
+        else
+            % VT Stream
+            [dataArray,timeStampArray,timeStampArrayConv,~,numRecordsReturned] = Netcom_pollVT( CSCChannelInfo{chanID}.channelStr, 1, globalProperties.StimOMaticConstants.VTframeRate, globalProperties.dataArrayPreAlloc,globalProperties.dataArrayPtr );  %0/1 verbose            
+        end;  
+                
         %debug - to display every package received
         
         %update internal data structures

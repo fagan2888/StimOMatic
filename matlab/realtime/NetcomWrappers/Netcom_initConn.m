@@ -1,7 +1,7 @@
 %
 % initialize netcom connection, get list of available objects
-%urut/dec11
-function [success, eventStr, allCSCs,allSEs,allTTs] = Netcom_initConn( serverName, appName)
+%
+function [success, eventStr, allCSCs,allSEs,allTTs, allVTs] = Netcom_initConn( serverName, appName)
 
     if nargin < 2
         appName = 'StimOMatic realtime';
@@ -12,21 +12,30 @@ function [success, eventStr, allCSCs,allSEs,allTTs] = Netcom_initConn( serverNam
 
     %% parse the list of returned objects
     %
-    eventStr='';
+    eventStr = '';
 
-    allCSCs=[];
-    allSEs=[];
-    allTTs=[];
+    allCSCs = [];
+    allSEs = [];
+    allTTs = [];
+    allVTs = [];
+    
     for k=1:length(cheetahTypes)
+        
         switch cheetahTypes{k}
             case 'CscAcqEnt'
-                allCSCs{ length(allCSCs)+1} = cheetahObjects{k};
+                allCSCs{ length(allCSCs)+1 } = cheetahObjects{k};
+                
             case 'SEScAcqEnt'
-                allSEs{ length(allSEs)+1} = cheetahObjects{k};
+                allSEs{ length(allSEs)+1 } = cheetahObjects{k};
+                
             case 'TTScAcqEnt'
-                allTTs{ length(allTTs)+1} = cheetahObjects{k};
+                allTTs{ length(allTTs)+1 } = cheetahObjects{k};
+                
             case 'EventAcqEnt'
                 eventStr = cheetahObjects{k};
+                
+            case 'VTAcqEnt'
+                allVTs{ length(allVTs)+1 } = cheetahObjects{k};
         end
     end
     

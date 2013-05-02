@@ -1,7 +1,8 @@
-
 % path pointing to matlab directory of StimOMatic source
 % code package.
+
 basepath = 'C:\Users\rutishauseru\Documents\GitHub\StimOMatic\matlab\';
+%basepath = 'C:\Users\superuser\Documents\MATLAB\StimOMatic-0.14\matlab\';
 %basepath = 'C:\Users\superuser\Documents\GitHub\StimOMatic\matlab\';
 %basepath = '/home/kotowicz/Documents/code/MPI/StimOMatic__kotowicz/matlab/';
 
@@ -32,6 +33,7 @@ path(path, [basepath ['realtime' dd 'plugins' dd 'pContinuousOpenGL']]);
 path(path, [basepath ['realtime' dd 'plugins' dd 'pLFPAv']]);
 path(path, [basepath ['realtime' dd 'plugins' dd 'pRaster']]);
 path(path, [basepath ['realtime' dd 'plugins' dd 'pCtrlLFP']]);
+path(path, [basepath ['realtime' dd 'plugins' dd 'pCtrlTHT']]);
 path(path, [basepath ['realtime' dd 'tcpClientMat']]);
 
 %% for PTB example

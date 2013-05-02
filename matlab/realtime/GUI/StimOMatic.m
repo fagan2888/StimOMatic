@@ -92,8 +92,25 @@ function buttonStartFeed_Callback(hObject, eventdata, handles)
 
 ChannelsActiveList1 = get(handles.ChannelsActiveList1, 'String');
 if isempty(ChannelsActiveList1)
-    disp('No CSC channels selected.');
-    return;
+
+    % TODO: is this check really the best way of doing things? 
+    %       should video channels have their own pull down menu?
+    switch isempty(handles.activePlugins)
+        case true
+            disp('No CSC channels selected');
+            return;
+            
+        case false
+            % Check if pCtrlTHT is among the active plugins
+            for n = 1:length(handles.activePlugins)
+                % TODO: replace '7' with unique video tracking identifier.
+                if handles.activePlugins{n}.pluginDef.ID == 7
+                    break;
+                    disp('No CSCs selected, but active video tracker plugin detected')
+                end
+            end
+    end
+    
 end
 
 modifyGUIStatus(handles, 1 );
@@ -229,8 +246,9 @@ serverIP = get( handles.ServerIP, 'String');
 
 addEntryToStatusListbox( handles.ListboxStatus, ['Connecting to: ' serverIP]);
 
-[success, eventStr, allCSCs,allSEs,allTTs] = Netcom_initConn( serverIP );
-handles.StimOMaticConstants.TTLStream=eventStr;
+[success, eventStr, allCSCs, allSEs, allTTs, allVTs] = Netcom_initConn( serverIP );
+handles.StimOMaticConstants.TTLStream = eventStr;
+handles.StimOMaticConstants.VTStreams = allVTs;
 
 if success ~= 1 || isempty(allCSCs)
     if isempty(allCSCs) && success == 1

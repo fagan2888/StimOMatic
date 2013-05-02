@@ -1,4 +1,5 @@
 % list of available plugins
+%
 function [pList, pListStrs] = definePluginList( onlyType )
 
 pListAll = definePluginListAll();
@@ -22,10 +23,11 @@ end
 
 function pList = definePluginListAll()
 
-%types
-TYPE_CONTINUOUS=1;   % is called for every new datapoint that comes in
-TYPE_TRIAL=2;        % is called for every new trial
+% trial types
+TRIAL_TYPE_CONTINUOUS = 1;   % is called for every new datapoint that comes in
+TRIAL_TYPE_SINGLE_TRIAL = 2; % is called for every new trial
 
+% does the plugin provide a matlab GUI? 
 NEEDS_MATLAB_GUI_TRUE = 1;
 NEEDS_MATLAB_GUI_FALSE = 0;
 
@@ -49,10 +51,10 @@ pList = struct( 'ID', [], ...
 
 %====== pSpikes plugin
 i=1;
-pList(i).ID=i;
-pList(i).name='pSpikes';   %prefix
-pList(i).displayName='Spikes and Waveforms (StimOMatic)';
-pList(i).type=TYPE_CONTINUOUS;
+pList(i).ID = i;
+pList(i).name = 'pSpikes';   %prefix
+pList(i).displayName = 'Spikes and Waveforms (StimOMatic)';
+pList(i).type = TRIAL_TYPE_CONTINUOUS;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
 
 %these function pointers define the function of the plugin
@@ -66,10 +68,10 @@ pList(i).resetGUIFunc = @pSpikes_resetGUI;
 
 %========= pContinuous plugin
 i=i+1;
-pList(i).ID=i;
-pList(i).name='pContinuous';   %prefix
-pList(i).displayName='Continuous LFP/Spikes plot';
-pList(i).type=TYPE_CONTINUOUS;
+pList(i).ID = i;
+pList(i).name = 'pContinuous';   %prefix
+pList(i).displayName = 'Continuous LFP/Spikes plot';
+pList(i).type = TRIAL_TYPE_CONTINUOUS;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
 
 %these function pointers define the function of the plugin
@@ -82,10 +84,10 @@ pList(i).updateGUIFunc = @pContinuous_updateGUI;
 
 %========= pContinuousOpenGL plugin
 i=i+1;
-pList(i).ID=i;
-pList(i).name='pContinuousOpenGL';   %prefix
-pList(i).displayName='Continuous LFP/Spikes plot (OpenGL)';
-pList(i).type=TYPE_CONTINUOUS;
+pList(i).ID = i;
+pList(i).name = 'pContinuousOpenGL';   %prefix
+pList(i).displayName = 'Continuous LFP/Spikes plot (OpenGL)';
+pList(i).type = TRIAL_TYPE_CONTINUOUS;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_FALSE;
 
 %these function pointers define the function of the plugin
@@ -99,10 +101,10 @@ pList(i).shutdownWorkerFunc = @pContinuousOpenGL_shutdownWorker;
 
 %========== pLFPAverage plugin (trial-by-trial)
 i=i+1;
-pList(i).ID=i;
-pList(i).name='pLFPAv';   %prefix
-pList(i).displayName='LFP Average per Trial';
-pList(i).type=TYPE_TRIAL;
+pList(i).ID = i;
+pList(i).name = 'pLFPAv';   %prefix
+pList(i).displayName = 'LFP Average per Trial';
+pList(i).type = TRIAL_TYPE_SINGLE_TRIAL;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
 
 %these function pointers define the function of the plugin
@@ -115,12 +117,12 @@ pList(i).updateGUIFunc = @pLFPAv_updateGUI;
 
 %========== pRaster plugin (trial-by-trial)
 i=i+1;
-pList(i).ID=i;
-pList(i).name='pRaster';   %prefix
-pList(i).displayName='Raster/PSTH (StimOMatic) - req pSpikes; ';
-pList(i).type=TYPE_TRIAL;
+pList(i).ID = i;
+pList(i).name = 'pRaster';   %prefix
+pList(i).displayName = 'Raster/PSTH (StimOMatic) - req pSpikes; ';
+pList(i).type = TRIAL_TYPE_SINGLE_TRIAL;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
-pList(i).dependsOn=1; %depends on plugin with this ID to get data (add it afterwards,so a link can be added)
+pList(i).dependsOn = 1; %depends on plugin with this ID to get data (add it afterwards,so a link can be added)
 
 %these function pointers define the function of the plugin
 pList(i).initFunc = @pRaster_initPlugin;
@@ -132,10 +134,10 @@ pList(i).updateGUIFunc = @pRaster_updateGUI;
 
 %========= pCtrlLFP plug (realtime control plugin)
 i=i+1;
-pList(i).ID=i;
-pList(i).name='pCtrlLFP';   %prefix
-pList(i).displayName='Realtime control LFP';
-pList(i).type=TYPE_CONTINUOUS;
+pList(i).ID = i;
+pList(i).name = 'pCtrlLFP';   %prefix
+pList(i).displayName = 'Realtime control LFP';
+pList(i).type = TRIAL_TYPE_CONTINUOUS;
 pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
 %pList(i).dependsOn=2; %depends on plugin with this ID to get data (add it afterwards,so a link can be added)
 
@@ -147,4 +149,22 @@ pList(i).processDataFunc = @pCtrlLFP_processData;
 pList(i).transferGUIFunc = @pCtrlLFP_prepareGUItransfer;
 pList(i).updateGUIFunc = @pCtrlLFP_updateGUI;
 pList(i).shutdownWorkerFunc = @pCtrlLFP_shutdownWorker;
+
+%========= pCtrlTHT plug (realtime control plugin)
+i=i+1;
+pList(i).ID = i;
+pList(i).name = 'pCtrlTHT';   %prefix
+pList(i).displayName = 'Realtime control THT';
+pList(i).type = TRIAL_TYPE_CONTINUOUS;
+pList(i).needs_matlab_gui = NEEDS_MATLAB_GUI_TRUE;
+%pList(i).dependsOn=2; %depends on plugin with this ID to get data (add it afterwards,so a link can be added)
+
+%these function pointers define the function of the plugin
+pList(i).initFunc = @pCtrlTHT_initPlugin;
+pList(i).initGUIFunc = @pCtrlTHT_initGUI;
+pList(i).initWorker = @pCtrlTHT_initWorker;
+pList(i).processDataFunc = @pCtrlTHT_processData;
+pList(i).transferGUIFunc = @pCtrlTHT_prepareGUItransfer;
+pList(i).updateGUIFunc = @pCtrlTHT_updateGUI;
+% pList(i).shutdownWorkerFunc = @pCtrlTHT_shutdownWorker; % Deprecated according to .m file
 

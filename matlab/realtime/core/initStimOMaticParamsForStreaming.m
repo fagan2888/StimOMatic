@@ -1,3 +1,8 @@
+%
+% CAVE: Hardcoded sampling frequency for CSCs does not apply for all
+% Neuralynx Digital Lynx systems!
+%
+
 function StimOMaticConstants = initStimOMaticParamsForStreaming( )
 
 StimOMaticConstants.versionStr = 'v130313-urut-ak';
@@ -50,6 +55,11 @@ StimOMaticConstants.colorOrder={'r','g','b','y','m','k','c'};
 StimOMaticConstants.nrPointsPerWaveform = 84;
 StimOMaticConstants.maxNrWaveformsToPlot = 200;
 StimOMaticConstants.plotOffsetWaveforms = 200;
+
+% VT streams
+StimOMaticConstants.widthVT = 720; % Width of video tracker frame
+StimOMaticConstants.heightVT = 576; % Height of video tracker frame
+StimOMaticConstants.VTframeRate = 24;% Frame rate?
 
 %=== spike detection parameters (StimOMatic parameters)
 StimOMaticParams = [];
