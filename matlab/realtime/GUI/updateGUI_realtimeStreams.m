@@ -1,5 +1,5 @@
 %
-% called by callbacks initiated by timers
+% called by callbacks initiated by timers. Runs on master.
 %
 %urut/dec11
 function labRefs = updateGUI_realtimeStreams( handles, nrWorkersToPoll, labRefs, activePlugins, iterationCounter )
@@ -43,25 +43,24 @@ try
                 %currentTimeOnAcquisition{workerID}
                 if mod(iterationCounter,50)==0    %update only once in a while
                     set( handles.labelCurrentTimestamp, 'String', [num2str(currentTimeOnAcquisition{workerID})] );
-                    
                 end
             end
             
-            %get the data for all plugins of this channel
+            %% get the data for all plugins of this channel
             if ~isempty(activePlugins)
                 %thisData = dataTransferGUI{workerID};
                 %trialDataOfWorker = trialData{workderID}; %transfer to client from this worker
 
                 %% matlab-plot plot all TT plugins
                 chanIDForGlobal=1;
+                % Check if trial-by-trial plugin needs to be updated.
+                % 'updatePlotPending' is set in 'pollDataParallel_processTrialbyTrialPlugins.m'
                 if trialDataOfWorker{chanIDForGlobal}.updatePlotPending
                     for k=handles.activePluginsTrial
                         
                         % check if this plugin does need to update any matlab
                         % components.
                         if activePlugins{k}.pluginDef.needs_matlab_gui == 1
-                            %for k=1:length(activePlugins)
-                            %if activePlugins{k}.pluginDef.type == 2 %TT
                             
                             if ~dataTransferedOfWorker
                                 GUIDataOfWorkerTmp = dataTransferGUI{workerID};
@@ -69,7 +68,7 @@ try
                             end
                             
                             activePlugins{k}.pluginDef.updateGUIFunc( CSCChanNr, GUIDataOfWorkerTmp{chanID}{k}, activePlugins{k}.handlesGUI, handles );
-                            %end
+
                         end
                     end
                     
@@ -82,14 +81,14 @@ try
                     % check if this plugin does need to update any matlab
                     % components.
                     if activePlugins{k}.pluginDef.needs_matlab_gui == 1
+                        
                         if ~dataTransferedOfWorker
                             % very expensive! ~ 5 seconds for 1200 runs
                             GUIDataOfWorkerTmp = dataTransferGUI{workerID};
                             dataTransferedOfWorker=1;
                         end
+                        
                         if iscell(GUIDataOfWorkerTmp)
-                            %if activePlugins{k}.pluginDef.type == 1 %continuous
-                            % i.e.: pContinuousOpenGL_updateGUI
                             activePlugins{k}.pluginDef.updateGUIFunc( CSCChanNr, GUIDataOfWorkerTmp{chanID}{k}, activePlugins{k}.handlesGUI, handles );
                         end
                     end
@@ -102,7 +101,7 @@ try
 
     end
     
-    %transfer back to worker if has been changed
+    %% transfer back to worker if has been changed
     if trialDataUpdatedOnWorker
         trialDataOfWorker{chanIDForGlobal}.updatePlotPending=0;
         trialData{workerIDForGlobal} = trialDataOfWorker; %transfer modified version back

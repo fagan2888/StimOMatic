@@ -46,12 +46,12 @@ dataTransferGUI = Composite(nrWorkers);
 globalProperties = Composite(nrWorkers);   % global properties, sent to all workers. exists once per worker
 
 
-trialDataInit = getTrialDataInit;
+trialDataInit = getTrialDataInit();
 
 processedDataInit.StimOMaticConstants = StimOMaticConstants; %copy these so they are available to each worker in local workspace
 processedDataInit.workerChannelMapping = workerChannelMapping;
 
-%== init data for each plugin (all are assumed to run on all channels)
+%% == init data for each plugin (all are assumed to run on all channels)
 
 if length(activePlugins)>0
 
@@ -60,10 +60,11 @@ if length(activePlugins)>0
         handlesParent.abs_ID_in_parent = activePlugins{k}.abs_ID;
         pluginData{k} = activePlugins{k}.pluginDef.initWorker( handlesParent, activePlugins{k}.handlesGUI );
         
-        if activePlugins{k}.pluginDef.type == 1 %continuous
+        % 'trial_type' is defined in 'definePluginList.m'
+        if activePlugins{k}.pluginDef.trial_type == 1 %continuous
             activePluginsCont = [ activePluginsCont k ];
         end
-        if activePlugins{k}.pluginDef.type == 2 %TT
+        if activePlugins{k}.pluginDef.trial_type == 2 %TT
             activePluginsTrial = [ activePluginsTrial k ];
         end
 
@@ -82,7 +83,7 @@ globalPropertiesInit.activePlugins = activePlugins;
 globalPropertiesInit.StimOMaticConstants = StimOMaticConstants;
 globalPropertiesInit.runCounter = 0;
 
-%initialize data structures on each of the workers
+%% initialize data structures on each of the workers
 for workerID = 1:nrWorkers
     
     [channelsOnWorker, nrChannelsOnWorker] = distributeChannels_getChannelsForWorker( workerChannelMapping, workerID );
@@ -135,7 +136,7 @@ labRefs.processedData = processedData;
 labRefs.dataTransferGUI = dataTransferGUI;
 labRefs.globalProperties = globalProperties;
 
-%== connect each worker to router
+%% == connect each worker to router
 %
 spmd(nrWorkers)
    
@@ -174,7 +175,7 @@ spmd(nrWorkers)
     end
 end
 
-%collapse error codes across all workers
+%% collapse error codes across all workers
 allOKTot = 1;
 for k=1:length(allOK)
     if allOK{k}~=1

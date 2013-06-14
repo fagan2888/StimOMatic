@@ -107,7 +107,7 @@ for k=1:handles.StimOMaticData.nrActiveChannels
 end
 
 % initialize GUIs of all plugins
-gcfOld=gcf;
+gcfOld=gcf();
 handles = plugins_allActive_initGUI( handles ); 
 guidata(hObject, handles); %write back GUI data before letting the timer start
 set(0,'CurrentFigure', gcfOld);    %set back to the main fig
@@ -121,11 +121,8 @@ timerType=1;
 
 callbackPeriod = 0.05; %sec
 
-
-
-%setappdata(handles.guifig, 'CustomDataStimOMatic', customData );
-
-handles.tmr1  = timer('TimerFcn' ,{@GUICallback1, timerType, handles.guifig}, 'Period', callbackPeriod, 'ExecutionMode', 'fixedRate');
+% setup polling timer which handles all data pickup
+handles.tmr1  = timer('TimerFcn' ,{@data_polling_timer_fcn, timerType, handles.guifig}, 'Period', callbackPeriod, 'ExecutionMode', 'fixedRate');
 
 serverIP = get( handles.ServerIP, 'String');
 

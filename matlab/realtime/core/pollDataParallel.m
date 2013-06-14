@@ -9,7 +9,7 @@
 %
 function labRefs = pollDataParallel( nrWorkersToPoll, labRefs, RTModeOn  )
 
-%restore the composite refs
+%% restore the composite refs
 CSCBufferData = labRefs.CSCBufferData;
 CSCTimestampData = labRefs.CSCTimestampData;
 currentTimeOnAcquisition = labRefs.currentTimeOnAcquisition;
@@ -20,6 +20,7 @@ processedData = labRefs.processedData;
 dataTransferGUI = labRefs.dataTransferGUI;
 globalProperties = labRefs.globalProperties;
 
+%% distribute the processing among all workers
 try
     spmd(nrWorkersToPoll)
          % put everything in a function that returns nothing,so no automatic composite variables are created. 
@@ -36,7 +37,7 @@ catch E
     dispAllErrors(E);
 end
 
-%preserve the handles to composites so garbage collection doesnt kill them.
+%% preserve the handles to composites so garbage collection doesnt kill them.
 labRefs.CSCBufferData = CSCBufferData;
 labRefs.CSCTimestampData = CSCTimestampData;
 labRefs.currentTimeOnAcquisition = currentTimeOnAcquisition;
@@ -46,3 +47,5 @@ labRefs.trialData = trialData;
 labRefs.processedData = processedData;
 labRefs.dataTransferGUI = dataTransferGUI;
 labRefs.globalProperties=globalProperties;
+
+end

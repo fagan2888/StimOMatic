@@ -3,7 +3,9 @@
 %checks the scheduled events stack for this channel and executes plugins if new events have arrived that need to be processed.
 %
 %
-function [scheduledEventsStack,processedData,trialData] = pollDataParallel_processEventsStack(chanID, scheduledEventsStack,CSCBufferData, CSCTimestampData , trialData, processedData,newDataScaled, timeStampArray, activePluginsCont)
+% TODO: separate the polling for new events (Netcom_processEventsIteration) 
+% from the activation of plugins.
+function [scheduledEventsStack,processedData,trialData] = pollDataParallel_processTrialbyTrialPlugins(chanID, scheduledEventsStack,CSCBufferData, CSCTimestampData , trialData, processedData,newDataScaled, timeStampArray, activePluginsCont)
 
 if ~isempty( scheduledEventsStack{chanID} )
     Nstack = size(scheduledEventsStack{chanID},1);
@@ -19,6 +21,9 @@ if ~isempty( scheduledEventsStack{chanID} )
             %event is here, process it
             disp(['Processing event on worker ' num2str(labindex) ' from ' num2str(tFrom) ' to ' num2str(t) ' remaining stack size ' num2str(size(scheduledEventsStack{chanID},1)-1) ]);
             
+            % TODO: we should think about getting rid of
+            % "updatePlotPending" since the "transferGUIFunc" should be
+            % able to check for updates.
             trialData{chanID}.updatePlotPending = 1;
             
             %loop over trial-by-trial plugins

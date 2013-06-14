@@ -9,8 +9,8 @@ eventsReceived=[];
 
 % disp([TTLStream ' success ' num2str(succeeded) ' received ' num2str(numRecordsReturned) ' dropped=' num2str(numRecordsDropped) ]);
 
-
-if numRecordsReturned>0
+%%
+if numRecordsReturned > 0
     
     if verbose
         disp([TTLStream ' success ' num2str(succeeded) ' received ' num2str(numRecordsReturned) ' dropped=' num2str(numRecordsDropped) ]);
@@ -20,4 +20,6 @@ if numRecordsReturned>0
     for j=1:length( ttlValueArray )
         eventsReceived(j,:) = [int64(timeStampArray(j)) int64(ttlValueArray(j))];
     end
+end
+
 end

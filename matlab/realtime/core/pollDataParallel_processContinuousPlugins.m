@@ -1,7 +1,8 @@
 %
-%part of pollDataParallel.m, externalized to allow profiling
+% part of pollDataParallel.m, externalized to allow profiling
+% handles continuous plugins only.
 %
-function [processedData,CSCBufferData,CSCTimestampData,currentTimeOnAcquisition,dataArray] = pollDataParallel_processNewDataBlock(chanID, dataArray, timeStampArray, timeStampArrayConv, bufferSize, CSCChannelInfo,processedData,  CSCBufferData,CSCTimestampData, currentTimeOnAcquisition, activePluginsCont )
+function [processedData,CSCBufferData,CSCTimestampData,currentTimeOnAcquisition,dataArray] = pollDataParallel_processContinuousPlugins(chanID, dataArray, timeStampArray, timeStampArrayConv, bufferSize, CSCChannelInfo,processedData,  CSCBufferData,CSCTimestampData, currentTimeOnAcquisition, activePluginsCont )
 framesize=512;
 
 if length(dataArray)>bufferSize
