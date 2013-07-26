@@ -9,7 +9,7 @@ function addEntryToStatusListbox( h, newVal, isAddTimestamp, maxVals )
     end
 
     if nargin < 4
-        maxVals=5;
+        maxVals=9;
     end
     
     %%

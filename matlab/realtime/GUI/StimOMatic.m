@@ -22,7 +22,7 @@ function varargout = StimOMatic(varargin)
 
 % Edit the above text to modify the response to help StimOMatic
 
-% Last Modified by GUIDE v2.5 13-Mar-2013 16:19:15
+% Last Modified by GUIDE v2.5 26-Jul-2013 11:35:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -105,8 +105,8 @@ if isempty(ChannelsActiveList1)
             for n = 1:length(handles.activePlugins)
                 % TODO: replace '7' with unique video tracking identifier.
                 if handles.activePlugins{n}.pluginDef.ID == 7
-                    break;
                     disp('No CSCs selected, but active video tracker plugin detected')
+                    break;
                 end
             end
     end
@@ -649,29 +649,6 @@ for k = 1 : nbr_active_plugins
 end
 
 
-% --- Executes on selection change in popupmenu7.
-function popupmenu7_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu7 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu7
-
-
-% --- Executes during object creation, after setting all properties.
-function popupmenu7_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 % --- Executes on selection change in listLoadedPlugins.
 function listLoadedPlugins_Callback(hObject, eventdata, handles)
 % hObject    handle to listLoadedPlugins (see GCBO)
@@ -883,57 +860,93 @@ function StartACQButton_Callback(hObject, eventdata, handles)
 % hObject    handle to StartACQButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-button_state = get(hObject, 'Value');
-button_max = get(hObject, 'Max');
-button_min = get(hObject, 'Min');
 
-if button_state == button_max
-    [succeeded, cheetahReply] = NlxSendCommand('-StartAcquisition');
-    if succeeded == 1
-        set(hObject, 'String', 'Stop ACQ', 'BackgroundColor', [0 1 0]);
-    else
-        set(hObject, 'Value', button_min);
-    end
-    
-elseif button_state == button_min
-    [succeeded, cheetahReply] = NlxSendCommand('-StopAcquisition');
-    if succeeded == 1
-        set(hObject, 'String', 'Start ACQ', 'BackgroundColor', [0.941 0.941 0.941]);
-    else
-        set(hObject, 'Value', button_max);
-    end    
-    
-end
+Netcom_controlCheetah(hObject, handles, 'ACQ');
 
 % --- Executes on button press in StartRECButton.
 function StartRECButton_Callback(hObject, eventdata, handles)
 % hObject    handle to StartRECButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-button_state = get(hObject, 'Value');
-button_max = get(hObject, 'Max');
-button_min = get(hObject, 'Min');
 
-if button_state == button_max
-    [succeeded, cheetahReply] = NlxSendCommand('-StartRecording');
-    if succeeded == 1
-        set(hObject, 'String', 'Stop REC', 'BackgroundColor', [0.48 0.06 0.89]);
-        % toggle ACQ button too, since stopping the REC will not stop ACQ.
-        if get(handles.StartACQButton, 'Value') == button_min
-            disp('setting ACQ too!');
-            set(handles.StartACQButton, 'Enable', 'off', 'String', 'Stop ACQ', 'BackgroundColor', [0 1 0], 'Value', button_max);
-        end
-    else
-        set(hObject, 'Value', button_min);
-    end
-    
-elseif button_state == button_min
-    [succeeded, cheetahReply] = NlxSendCommand('-StopRecording');
-    if succeeded == 1
-        set(hObject, 'String', 'Start REC', 'BackgroundColor', [0.941 0.941 0.941]);
-        set(handles.StartACQButton, 'Enable', 'on');
-    else
-        set(hObject, 'Value', button_max);
-    end    
-    
+Netcom_controlCheetah(hObject, handles, 'REC');
+
+function inputfieldSubjectID_Callback(hObject, eventdata, handles)
+% hObject    handle to inputfieldSubjectID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of inputfieldSubjectID as text
+%        str2double(get(hObject,'String')) returns contents of inputfieldSubjectID as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function inputfieldSubjectID_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputfieldSubjectID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
+
+
+
+function inputfieldExpTag_Callback(hObject, eventdata, handles)
+% hObject    handle to inputfieldExpTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of inputfieldExpTag as text
+%        str2double(get(hObject,'String')) returns contents of inputfieldExpTag as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function inputfieldExpTag_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputfieldExpTag (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkREC.
+function checkREC_Callback(hObject, eventdata, handles)
+% hObject    handle to checkREC (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkREC
+
+
+% --- Executes on button press in checkACQ.
+function checkACQ_Callback(hObject, eventdata, handles)
+% hObject    handle to checkACQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkACQ
+
+
+% --- Executes on button press in checkTriggerStim.
+function checkTriggerStim_Callback(hObject, eventdata, handles)
+% hObject    handle to checkTriggerStim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkTriggerStim
+
+
+% --- Executes on button press in checkAutoStop.
+function checkAutoStop_Callback(hObject, eventdata, handles)
+% hObject    handle to checkAutoStop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkAutoStop
